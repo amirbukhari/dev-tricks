@@ -52,12 +52,12 @@ in package json under the contributes object add the following
 "configuration": {
     "title": "dev-tricks",
     "properties": {
-      "devTricks.seniorEmail": {
+      "dev-tricks.seniorEmail": {
         "type": "string",
         "default": "senior@example.com",
         "description": "Your seniors email address"
       },
-      "devTricks.email": {
+      "dev-tricks.email": {
         "type": "string",
         "default": "junior@example.com",
         "description": "Your email address"
