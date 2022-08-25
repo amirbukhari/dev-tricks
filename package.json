@@ -9,41 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:dev-tricks.helloWorld"
-  ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "dev-tricks.helloWorld",
-        "category": "dev-tricks",
-        "title": "Hello World"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "dev-tricks.helloWorld",
-        "key": "ctrl+f1",
-        "mac": "cmd+f1",
-        "when": "editorTextFocus"
-      }
-    ],
-    "configuration": {
-      "title": "dev-tricks",
-      "properties": {
-        "devTricks.seniorEmail": {
-          "type": "string",
-          "default": "senior@example.com",
-          "description": "Your seniors email address"
-        },
-        "devTricks.email": {
-          "type": "string",
-          "default": "junior@example.com",
-          "description": "Your email address"
-        }
-      }
-    } 
+    
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
