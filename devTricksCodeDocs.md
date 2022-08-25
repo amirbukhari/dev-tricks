@@ -32,6 +32,9 @@ in extension.ts, in the activate lifecycle function
 
 context.subscriptions.push(disposable);
 ```
+We can trigger this command by pressing f1 and typing in dev-tricks sendNotification
+
+---
 
 ## Adding a keybinding
 in package json under the contributes object add the following
