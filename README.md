@@ -1,71 +1,114 @@
-# dev-tricks README
 
-This is the README for your extension "dev-tricks". After writing up a brief description, we recommend including the following sections.
+# Dev Tricks VSCode Extension 
+## Registering a command
+### In package. json
 
-## Features
+In package json under the contributes object add the following
+```json
+  "commands": [
+    {
+      "command": "dev-tricks.sendNotification",
+      "category": "dev-tricks",
+      "title": "Dev Tricks Send Notification"
+    }
+  ],
+```
+In the root of package json add the following
+ ```json
+  "activationEvents": [
+    "onCommand:dev-tricks.sendNotification"
+  ],
+```
+Other examples
+```json
+"onLanguage:typescript"
+"onStartupFinished"
+```
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+in extension.ts, in the activate lifecycle function
+```ts
+	const disposable = vscode.commands.registerCommand('dev-tricks.sendNotification', async () => { 
+  	vscode.window.showInformationMessage(`Hello Rentsync Devs`);
+});
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+context.subscriptions.push(disposable);
+```
+We can trigger this command by pressing f1 and typing in dev-tricks sendNotification
 
 ---
 
-## Following extension guidelines
+## Adding a keybinding
+in package json under the contributes object add the following
+```json
+  "keybindings": [
+    {
+      "command": "dev-tricks.sendNotification",
+      "key": "ctrl+f1",
+      "mac": "cmd+f1",
+      "when": "editorTextFocus"
+    }
+  ],
+```
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+## Adding Settings
+in package json under the contributes object add the following
+``` json
+"configuration": {
+    "title": "dev-tricks",
+    "properties": {
+      "dev-tricks.seniorEmail": {
+        "type": "string",
+        "default": "senior@example.com",
+        "description": "Your seniors email address"
+      },
+      "dev-tricks.email": {
+        "type": "string",
+        "default": "junior@example.com",
+        "description": "Your email address"
+      }
+    }
+  } 
+```
+in extenstion.ts activate function
+```ts
+const configuration = vscode.workspace.getConfiguration('dev-tricks');
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+const seniorEmail = configuration.get<string>('seniorEmail');
+const juniorEmail = configuration.get<string>('email');
+		
+```
 
-## Working with Markdown
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+## Adding our notification functionality  
+### In extension.ts under the activate function
+```ts
+const password = await vscode.window.showInputBox({
+  prompt:'Please enter your password',
+  password:true
+});
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+const seniorEmail = configuration.get<string>('seniorEmail');
+const juniorEmail = configuration.get<string>('email');
 
-## For more information
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: juniorEmail,
+    pass: password
+  }
+});
+const mailOptions = {
+  from: juniorEmail,
+  to: seniorEmail,
+  subject: 'James help',
+  text: `James help`
+};
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    vscode.window.showErrorMessage(`${error}`);
+  } else {
+    vscode.window.showInformationMessage(`Email sent: ${info.response}`);
+  }
+});
+```
